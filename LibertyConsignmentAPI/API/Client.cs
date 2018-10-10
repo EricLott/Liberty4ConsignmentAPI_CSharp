@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using LibertyConsignmentAPI.Converters;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
@@ -9,13 +10,65 @@ using System.Threading.Tasks;
 
 namespace LibertyConsignmentAPI
 {
+    public partial class GetClientResponse
+    {
+        [JsonProperty("response")]
+        public GetClientResponseObject Response { get; set; }
+    }
+
+    public partial class GetClientResponseObject
+    {
+        [JsonProperty("total")]
+        public long Total { get; set; }
+
+        [JsonProperty("clients")]
+        public SearchClientResponseClients[] Clients { get; set; }
+    }
+
+    public partial class SearchClientResponseClients
+    {
+        [JsonProperty("search_client")]
+        public SearchClient SearchClient { get; set; }
+    }
+
+    public partial class SearchClient
+    {
+        [JsonProperty("counter")]
+        public long Counter { get; set; }
+
+        [JsonProperty("clientid")]
+        public long Clientid { get; set; }
+
+        [JsonProperty("account")]
+        public long Account { get; set; }
+
+        [JsonProperty("firstname")]
+        public string Firstname { get; set; }
+
+        [JsonProperty("lastname")]
+        public string Lastname { get; set; }
+
+        [JsonProperty("phone")]
+        public string Phone { get; set; }
+
+        [JsonProperty("street")]
+        public string Street { get; set; }
+
+        [JsonProperty("city")]
+        public string City { get; set; }
+
+        [JsonProperty("userfield")]
+        [JsonConverter(typeof(ParseStringConverter))]
+        public long Userfield { get; set; }
+    }
+
     public partial class ClientResponse
     {
         [JsonProperty("response")]
-        public ClientResponseResponse Response { get; set; }
+        public ClientResponseObject Response { get; set; }
     }
 
-    public partial class ClientResponseResponse
+    public partial class ClientResponseObject
     {
         [JsonProperty("basic_client")]
         public Client Client { get; set; }
@@ -29,7 +82,7 @@ namespace LibertyConsignmentAPI
 
     public partial class ClientResponse
     {
-        public static ClientResponse FromJson(string json) => JsonConvert.DeserializeObject<ClientResponse>(json, ClientConverter.Settings);
+        public static ClientResponse FromJson(string json) => JsonConvert.DeserializeObject<ClientResponse>(json, Converter.Settings);
     }
 
     public partial class Client
@@ -95,7 +148,7 @@ namespace LibertyConsignmentAPI
         public string State { get; set; }
 
         [JsonProperty("zip")]
-        [JsonConverter(typeof(ClientParseStringConverter))]
+        [JsonConverter(typeof(ParseStringConverter))]
         public long Zip { get; set; }
 
         [JsonProperty("primary")]
@@ -104,55 +157,11 @@ namespace LibertyConsignmentAPI
 
     public partial class Client
     {
-        public static Client FromJson(string json) => JsonConvert.DeserializeObject<Client>(json, ClientConverter.Settings);
+        public static Client FromJson(string json) => JsonConvert.DeserializeObject<Client>(json, Converter.Settings);
     }
 
     public static class ClientSerialize
     {
-        public static string ToJson(this AddClientClass self) => JsonConvert.SerializeObject(self, ClientConverter.Settings);
-    }
-
-    internal static class ClientConverter
-    {
-        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
-        {
-            MetadataPropertyHandling = MetadataPropertyHandling.Default,
-            DateParseHandling = DateParseHandling.None,
-            Converters = {
-                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-            },
-        };
-    }
-
-    internal class ClientParseStringConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            long l;
-            if (Int64.TryParse(value, out l))
-            {
-                return l;
-            }
-            throw new Exception("Cannot unmarshal type long");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (long)untypedValue;
-            serializer.Serialize(writer, value.ToString());
-
-            return;
-        }
-
-        public static readonly ClientParseStringConverter Singleton = new ClientParseStringConverter();
+        public static string ToJson(this AddClientClass self) => JsonConvert.SerializeObject(self, Converter.Settings);
     }
 }

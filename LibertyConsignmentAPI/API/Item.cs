@@ -1,23 +1,23 @@
-﻿using Newtonsoft.Json;
+﻿using LibertyConsignmentAPI.Converters;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Globalization;
-using static LibertyConsignmentAPI.API.Enums;
 
 namespace LibertyConsignmentAPI
 {
     public partial class ItemResponse
     {
         [JsonProperty("response")]
-        public ItemResponseResponse Response { get; set; }
+        public ItemResponseObject Response { get; set; }
     }
 
     public partial class ItemResponse
     {
-        public static ItemResponse FromJson(string json) => JsonConvert.DeserializeObject<ItemResponse>(json, ItemConverter.Settings);
+        public static ItemResponse FromJson(string json) => JsonConvert.DeserializeObject<ItemResponse>(json, Converter.Settings);
     }
 
-    public partial class ItemResponseResponse
+    public partial class ItemResponseObject
     {
         [JsonProperty("item")]
         public Item Item { get; set; }
@@ -44,7 +44,7 @@ namespace LibertyConsignmentAPI
         public string Name { get; set; } = "";
 
         [JsonProperty("account")]
-        [JsonConverter(typeof(ClientParseStringConverter))]
+        [JsonConverter(typeof(ParseStringConverter))]
         public long Account { get; set; } = 0;
 
         [JsonProperty("number")]
@@ -170,7 +170,7 @@ namespace LibertyConsignmentAPI
 
     public partial class Item
     {
-        public static Item FromJson(string json) => JsonConvert.DeserializeObject<Item>(json, ItemConverter.Settings);
+        public static Item FromJson(string json) => JsonConvert.DeserializeObject<Item>(json, Converter.Settings);
     }
 
     public partial class Attribute
@@ -223,53 +223,7 @@ namespace LibertyConsignmentAPI
 
     public static class ItemSerialize
     {
-        public static string ToJson(this AddItem self) => JsonConvert.SerializeObject(self, ItemConverter.Settings);
+        public static string ToJson(this AddItem self) => JsonConvert.SerializeObject(self, Converter.Settings);
     }
 
-    internal static class ItemConverter
-    {
-        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
-        {
-            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-            DateParseHandling = DateParseHandling.None,
-            Converters = {
-                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-            },
-        };
-    }
-
-    internal class ItemParseStringConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null)
-            {
-                return null;
-            }
-
-            var value = serializer.Deserialize<string>(reader);
-            long l;
-            if (Int64.TryParse(value, out l))
-            {
-                return l;
-            }
-            throw new Exception("Cannot unmarshal type long");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (long)untypedValue;
-            serializer.Serialize(writer, value.ToString());
-            return;
-        }
-
-        public static readonly ItemParseStringConverter Singleton = new ItemParseStringConverter();
-    }
 }
