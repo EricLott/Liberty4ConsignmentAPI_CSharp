@@ -77,10 +77,12 @@
     <Compile Include="API\Calls.cs" />
     <Compile Include="API\Category.cs" />
     <Compile Include="API\Client.cs" />
+    <Compile Include="API\Converters\DateTime.cs" />
     <Compile Include="API\Converters\JSON.cs" />
     <Compile Include="API\Converters\MD5.cs" />
     <Compile Include="API\Exception.cs" />
     <Compile Include="API\Item.cs" />
+    <Compile Include="API\MiscResponses.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="API\Reference\RestSharpReference.cs" />
     <Compile Include="API\User.cs" />

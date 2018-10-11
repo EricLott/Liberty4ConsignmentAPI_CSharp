@@ -1,7 +1,6 @@
 ﻿using LibertyConsignmentAPI.Auth;
 using RestSharp;
 using System;
-using System.Linq;
 using System.Net;
 using System.Security;
 using System.Threading;
@@ -77,14 +76,15 @@ namespace LibertyConsignmentAPI
     {
         public Item Item { get; set; }
 
+        public AddItemCall(Item item)
+        {
+            Item = item;
+        }
+
         public ItemResponse Execute(Credentials LibertyApiAuth)
         {
             try
             {
-                if (Item == null)
-                {
-                    throw new Exception("Execute command requires an item object, which was not supplied");
-                }
                 LibertyApiAuth.GetCallTime();
                 var client = new RestClient("http://" + LibertyApiAuth.ServerName + ":" + LibertyApiAuth.ListenPortNumber + "/data/item?clientid=" + Item.ClientId);
                 var request = new RestRequest(Method.POST);
@@ -101,6 +101,49 @@ namespace LibertyConsignmentAPI
                 string s = addItem.ToJson();
 
                 IRestResponse response = client.Execute(request);
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    throw new Exception(response.StatusCode.ToString());
+                }
+                else
+                {
+                    var GetItemResponse = ItemResponse.FromJson(response.Content);
+                    return GetItemResponse;
+                }
+            }
+            catch (Exception ee)
+            {
+                throw ee;
+            }
+        }
+    }
+
+    public class AsyncCopyItemCall
+    {
+        public ItemResponse ItemResponse { get; set; }
+
+        public AsyncCopyItemCall(ItemResponse itemResponse)
+        {
+            ItemResponse = itemResponse;
+        }
+
+        public async Task<ItemResponse> Execute(Credentials LibertyApiAuth)
+        {
+            try
+            {
+                LibertyApiAuth.GetCallTime();
+                var client = new RestClient("http://" + LibertyApiAuth.ServerName + ":" + LibertyApiAuth.ListenPortNumber + "/data/copyitem?itemid=" + ItemResponse.Response.Item.ItemId + "&updatetime=1&cost=" + ItemResponse.Response.Item.Cost + "&quantity=" + ItemResponse.Response.Item.Quantity);
+                var request = new RestRequest(Method.GET);
+
+                client.CookieContainer = LibertyApiAuth.Cookie;
+                request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());
+                request.AddHeader("x-application-id", LibertyApiAuth.ApplicationID);
+                request.AddHeader("x-api-version", LibertyApiAuth.ApiVersion);
+                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
+
+                var cancellationTokenSource = new CancellationTokenSource();
+                var response = await client.ExecuteTaskAsync(request, cancellationTokenSource.Token);
+
                 if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
                     throw new Exception(response.StatusCode.ToString());
@@ -208,13 +251,11 @@ namespace LibertyConsignmentAPI
                 request.AddHeader("x-auth-string", LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
 
                 var cancellationTokenSource = new CancellationTokenSource();
-
                 var response = await client.ExecuteTaskAsync(request, cancellationTokenSource.Token);
-                LibertyApiAuth.Cookie = client.CookieContainer;
-                var userResponse = LoginResponse.FromJson(response.Content);
+                var loginResponse = LoginResponse.FromJson(response.Content);
                 LibertyApiAuth.Cookie = client.CookieContainer;
 
-                return userResponse;
+                return loginResponse;
             }
             catch (Exception ee)
             {
@@ -251,7 +292,7 @@ namespace LibertyConsignmentAPI
                 LibertyApiAuth.GetCallTime();
                 var client = new RestClient("http://" + LibertyApiAuth.ServerName + ":" + LibertyApiAuth.ListenPortNumber + "/data/basicclient");
                 var request = new RestRequest(Method.POST);
-                
+
                 client.CookieContainer = LibertyApiAuth.Cookie;
                 request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());
                 request.AddHeader("x-application-id", LibertyApiAuth.ApplicationID);
@@ -315,5 +356,41 @@ namespace LibertyConsignmentAPI
         }
     }
 
+    public class AsyncGetItemPriceHistory
+    {
+        public string CategoryID { get; set; }
+        public string BrandID { get; set; }
+
+        public AsyncGetItemPriceHistory(string categoryID, string brandID)
+        {
+            this.CategoryID = categoryID;
+            this.BrandID = brandID;
+        }
+
+        public async Task<GetItemPriceHistoryResponse> ExecuteAsync(Credentials LibertyApiAuth)
+        {
+            try
+            {
+                LibertyApiAuth.GetCallTime();
+                var client = new RestClient("http://" + LibertyApiAuth.ServerName + ":" + LibertyApiAuth.ListenPortNumber + "/data/pricehistory?categoryid=" + CategoryID + "&brandid=" + BrandID);
+                var request = new RestRequest(Method.GET);
+                client.CookieContainer = LibertyApiAuth.Cookie;
+                request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());
+                request.AddHeader("x-application-id", LibertyApiAuth.ApplicationID);
+                request.AddHeader("x-api-version", LibertyApiAuth.ApiVersion);
+                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
+
+                var cancellationTokenSource = new CancellationTokenSource();
+                var response = await client.ExecuteTaskAsync(request, cancellationTokenSource.Token);
+                var historyResponse = GetItemPriceHistoryResponse.FromJson(response.Content);
+
+                return historyResponse;
+            }
+            catch (Exception ee)
+            {
+                throw ee;
+            }
+        }
+    }
 }
 
