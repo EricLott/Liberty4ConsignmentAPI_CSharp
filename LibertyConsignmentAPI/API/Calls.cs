@@ -178,7 +178,13 @@ namespace LibertyConsignmentAPI
             this.Password = user.Password;
         }
 
-        public LoginResponse Execute(Credentials LibertyApiAuth)
+        /// <summary>
+        /// Execute basic login call
+        /// </summary>
+        /// <param name="LibertyApiAuth">API Credentials</param>
+        /// <param name="clearPass">Bool determines if securestring is cleared during execution</param>
+        /// <returns></returns>
+        public LoginResponse Execute(Credentials LibertyApiAuth, bool clearPass = true)
         {
             try
             {
@@ -187,12 +193,13 @@ namespace LibertyConsignmentAPI
                     throw new Exception("User credentials not supplied");
                 }
                 LibertyApiAuth.GetCallTime();
-                Console.WriteLine(LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
-                Console.WriteLine(LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
-                Console.WriteLine(LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
                 String s = Cipher.SecureStringToString(Password);
                 var client = new RestClient("http://" + LibertyApiAuth.ServerName + ":" + LibertyApiAuth.ListenPortNumber + "/data/login?username=" + Username + "&password=" + s);
-                Password.Clear();
+
+                if (clearPass)
+                {
+                    Password.Clear();
+                }
                 client.CookieContainer = new CookieContainer();
                 var request = new RestRequest(Method.GET);
                 request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());
@@ -231,7 +238,13 @@ namespace LibertyConsignmentAPI
             this.Password = user.Password;
         }
 
-        public async Task<LoginResponse> ExecuteAsync(Credentials LibertyApiAuth)
+        /// <summary>
+        /// Execute basic login call
+        /// </summary>
+        /// <param name="LibertyApiAuth">API Credentials</param>
+        /// <param name="clearPass">Bool determines if securestring is cleared during execution</param>
+        /// <returns></returns>
+        public async Task<LoginResponse> ExecuteAsync(Credentials LibertyApiAuth, bool clearPass = true)
         {
             try
             {
@@ -242,7 +255,10 @@ namespace LibertyConsignmentAPI
                 LibertyApiAuth.GetCallTime();
                 String s = Cipher.SecureStringToString(Password);
                 var client = new RestClient("http://" + LibertyApiAuth.ServerName + ":" + LibertyApiAuth.ListenPortNumber + "/data/login?username=" + Username + "&password=" + s);
-                Password.Clear();
+                if (clearPass)
+                {
+                    Password.Clear();
+                }
                 client.CookieContainer = new CookieContainer();
                 var request = new RestRequest(Method.GET);
                 request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());

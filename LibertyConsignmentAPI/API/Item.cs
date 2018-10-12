@@ -166,6 +166,36 @@ namespace LibertyConsignmentAPI
 
         [JsonProperty("images")]
         public Image[] Images { get; set; }
+
+        public DateTime ReceivedDateTime
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(Received))
+                {
+                    return new LibertyDate(Received).Value;
+                }
+                else
+                {
+                    return DateTime.MinValue;
+                }
+            }
+        }
+
+        public DateTime StartDateTime
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(Start))
+                {
+                    return new LibertyDate(Start).Value;
+                }
+                else
+                {
+                    return DateTime.MinValue;
+                }
+            }
+        }
     }
 
     public partial class Item

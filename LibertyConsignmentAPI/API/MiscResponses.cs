@@ -55,13 +55,13 @@ namespace LibertyConsignmentAPI
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(LowDate))
+                if (string.IsNullOrWhiteSpace(LowDate))
                 {
-                    return new LibertyDate(LowDate).Value;
+                    return DateTime.MinValue;
                 }
                 else
                 {
-                    return DateTime.MinValue;
+                return new LibertyDate(LowDate).Value;
                 }
             }
         }

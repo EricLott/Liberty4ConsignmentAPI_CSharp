@@ -46,21 +46,21 @@ namespace LibertyConsignmentAPI.Auth
             this.ServerName = serverName;
             this.ListenPortNumber = listenPortNumber;
 
-            var timer = new System.Threading.Timer(e => KeepSessionAlive(), null, TimeSpan.Zero, TimeSpan.FromMinutes(4.5));
+            var timer = new System.Threading.Timer(e => KeepSessionAlive(), null, TimeSpan.Zero, TimeSpan.FromMinutes(4));
         }
 
         private async void KeepSessionAlive()
         {
             if (KeepSessionOpen)
             {
-                if (User.Username == null || User.Password == null)
+                if (User.Username == null || User.Password.Length == 0)
                 {
-                    throw new LibertyException("Auth object must have nested user object to keep alive");
+                    Console.WriteLine("Auth object must have nested user object to keep alive");
                 }
                 else
                 {
                     AsyncLoginCall asyncLoginCall = new AsyncLoginCall(User.Username, User.Password);
-                    await asyncLoginCall.ExecuteAsync(this);
+                    await asyncLoginCall.ExecuteAsync(this, false);
                     Console.WriteLine("Session kept open");
                 }
             }
