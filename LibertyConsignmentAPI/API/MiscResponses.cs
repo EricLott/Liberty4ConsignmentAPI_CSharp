@@ -71,4 +71,33 @@ namespace LibertyConsignmentAPI
     {
         public static GetItemPriceHistoryResponse FromJson(string json) => JsonConvert.DeserializeObject<GetItemPriceHistoryResponse>(json, Converter.Settings);
     }
+
+    public partial class CheckLicenseResponse
+    {
+        [JsonProperty("response")]
+        public CheckLicenseResponseObject Response { get; set; }
+    }
+
+    public partial class CheckLicenseResponseObject
+    {
+        [JsonProperty("license_info")]
+        public LicenseInfo LicenseInfo { get; set; }
+    }
+
+    public partial class LicenseInfo
+    {
+        [JsonProperty("storeid")]
+        public long Storeid { get; set; }
+
+        [JsonProperty("storename")]
+        public string Storename { get; set; }
+
+        [JsonProperty("licensename")]
+        public string Licensename { get; set; }
+    }
+
+    public partial class CheckLicenseResponse
+    {
+        public static CheckLicenseResponse FromJson(string json) => JsonConvert.DeserializeObject<CheckLicenseResponse>(json, Converter.Settings);
+    }
 }

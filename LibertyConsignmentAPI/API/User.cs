@@ -9,10 +9,10 @@ namespace LibertyConsignmentAPI
     public partial class LoginResponse
     {
         [JsonProperty("response")]
-        public Response Response { get; set; }
+        public CheckLicenseResponseObject Response { get; set; }
     }
 
-    public partial class Response
+    public partial class CheckLicenseResponseObject
     {
         [JsonProperty("result")]
         public long Result { get; set; }

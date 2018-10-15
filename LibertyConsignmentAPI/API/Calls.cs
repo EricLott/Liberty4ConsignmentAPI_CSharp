@@ -27,7 +27,7 @@ namespace LibertyConsignmentAPI
                 request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());
                 request.AddHeader("x-application-id", LibertyApiAuth.ApplicationID);
                 request.AddHeader("x-api-version", LibertyApiAuth.ApiVersion);
-                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
+                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString());
 
                 IRestResponse response = client.Execute(request);
                 var getNewItemResponse = ItemResponse.FromJson(response.Content);
@@ -59,7 +59,7 @@ namespace LibertyConsignmentAPI
                 request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());
                 request.AddHeader("x-application-id", LibertyApiAuth.ApplicationID);
                 request.AddHeader("x-api-version", LibertyApiAuth.ApiVersion);
-                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
+                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString());
 
                 IRestResponse response = client.Execute(request);
                 var GetItemResponse = ItemResponse.FromJson(response.Content);
@@ -92,7 +92,7 @@ namespace LibertyConsignmentAPI
                 request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());
                 request.AddHeader("x-application-id", LibertyApiAuth.ApplicationID);
                 request.AddHeader("x-api-version", LibertyApiAuth.ApiVersion);
-                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
+                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString());
                 AddItem addItem = new AddItem
                 {
                     Item = Item
@@ -139,7 +139,7 @@ namespace LibertyConsignmentAPI
                 request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());
                 request.AddHeader("x-application-id", LibertyApiAuth.ApplicationID);
                 request.AddHeader("x-api-version", LibertyApiAuth.ApiVersion);
-                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
+                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString());
 
                 var cancellationTokenSource = new CancellationTokenSource();
                 var response = await client.ExecuteTaskAsync(request, cancellationTokenSource.Token);
@@ -205,7 +205,7 @@ namespace LibertyConsignmentAPI
                 request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());
                 request.AddHeader("x-application-id", LibertyApiAuth.ApplicationID);
                 request.AddHeader("x-api-version", LibertyApiAuth.ApiVersion);
-                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
+                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString());
 
                 IRestResponse response = client.Execute(request);
                 LibertyApiAuth.Cookie = client.CookieContainer;
@@ -264,7 +264,7 @@ namespace LibertyConsignmentAPI
                 request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());
                 request.AddHeader("x-application-id", LibertyApiAuth.ApplicationID);
                 request.AddHeader("x-api-version", LibertyApiAuth.ApiVersion);
-                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
+                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString());
 
                 var cancellationTokenSource = new CancellationTokenSource();
                 var response = await client.ExecuteTaskAsync(request, cancellationTokenSource.Token);
@@ -313,7 +313,7 @@ namespace LibertyConsignmentAPI
                 request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());
                 request.AddHeader("x-application-id", LibertyApiAuth.ApplicationID);
                 request.AddHeader("x-api-version", LibertyApiAuth.ApiVersion);
-                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
+                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString());
                 request.AddParameter("application/json", addClient.ToJson(), ParameterType.RequestBody);
 
                 IRestResponse response = client.Execute(request);
@@ -359,7 +359,7 @@ namespace LibertyConsignmentAPI
                 request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());
                 request.AddHeader("x-application-id", LibertyApiAuth.ApplicationID);
                 request.AddHeader("x-api-version", LibertyApiAuth.ApiVersion);
-                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
+                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString());
 
                 IRestResponse response = client.Execute(request);
                 var GetResponse = CategoryTreeResponse.FromJson(response.Content);
@@ -394,7 +394,7 @@ namespace LibertyConsignmentAPI
                 request.AddHeader("x-call-time", LibertyApiAuth.CallTime.ToString());
                 request.AddHeader("x-application-id", LibertyApiAuth.ApplicationID);
                 request.AddHeader("x-api-version", LibertyApiAuth.ApiVersion);
-                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString(LibertyApiAuth.CallTime));
+                request.AddHeader("x-auth-string", LibertyApiAuth.AuthString());
 
                 var cancellationTokenSource = new CancellationTokenSource();
                 var response = await client.ExecuteTaskAsync(request, cancellationTokenSource.Token);

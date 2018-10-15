@@ -66,9 +66,9 @@ namespace LibertyConsignmentAPI.Auth
             }
         }
 
-        internal string AuthString(int callTime)
+        internal string AuthString()
         {
-            return LibertyConsignmentAPI.Hashes.MD5.Convert(ApplicationID + ":" + ApiKey + ":" + callTime);
+            return LibertyConsignmentAPI.Hashes.MD5.Convert(ApplicationID + ":" + ApiKey + ":" + this.CallTime);
         }
 
         public void PingTest()
