@@ -61,7 +61,7 @@ namespace LibertyConsignmentAPI
                 }
                 else
                 {
-                return new LibertyDate(LowDate).Value;
+                    return new LibertyDate(LowDate).Value;
                 }
             }
         }

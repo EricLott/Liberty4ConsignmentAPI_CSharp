@@ -48,6 +48,7 @@ namespace LibertyConsignmentAPI
         {
 
         }
+
         /// <summary>
         /// Uses SecureString object as password and immediately clears it.
         /// </summary>
